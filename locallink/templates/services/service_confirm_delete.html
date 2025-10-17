@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Service - LocalLink{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{% url 'service_detail' service.pk %}" class="text-primary-600 hover:text-primary-700 flex items-center">
+            <span class="mr-1">←</span> Back to Service
+        </a>
+    </div>
+    
+    <!-- Delete Confirmation -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="text-center mb-6">
+            <div class="text-6xl mb-4">🗑️</div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Delete Service</h1>
+            <p class="text-gray-600">Are you sure you want to delete this service listing?</p>
+        </div>
+        
+        <!-- Service Info -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <h3 class="font-semibold text-gray-800 mb-2">{{ service.service_name }}</h3>
+            <p class="text-gray-600 text-sm">by {{ service.provider_name }}</p>
+            <p class="text-gray-600 text-sm">📍 {{ service.location_area }}</p>
+            <p class="text-gray-600 text-sm">📂 {{ service.category.name }}</p>
+        </div>
+        
+        <!-- Warning -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex items-start">
+                <div class="text-red-500 mr-2">⚠️</div>
+                <div>
+                    <h4 class="font-semibold text-red-800 mb-1">This action cannot be undone</h4>
+                    <p class="text-red-700 text-sm">All reviews and data associated with this service will be permanently deleted.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <form method="POST" class="space-y-3">
+            {% csrf_token %}
+            <button type="submit" 
+                    class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                Yes, Delete Service
+            </button>
+        </form>
+        
+        <a href="{% url 'service_detail' service.pk %}" 
+           class="block w-full bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition duration-200 text-center mt-3">
+            Cancel
+        </a>
+    </div>
+</div>
+{% endblock %}
