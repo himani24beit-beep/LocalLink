@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} Services - LocalLink{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="mb-4">
+    <a href="{% url 'service_list' %}" class="text-primary-600 hover:text-primary-700 flex items-center">
+        <span class="mr-1">←</span> Back to All Services
+    </a>
+</div>
+
+<!-- Category Header -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <div class="text-center">
+        <div class="text-6xl mb-4">
+            {% if category.name == 'Tutoring' %}📚
+            {% elif category.name == 'Home Repair' %}🔧
+            {% elif category.name == 'Pet Care' %}🐕
+            {% elif category.name == 'Cleaning' %}🧹
+            {% elif category.name == 'Delivery' %}🚚
+            {% elif category.name == 'Photography' %}📸
+            {% elif category.name == 'Event Planning' %}🎉
+            {% elif category.name == 'Beauty & Wellness' %}💄
+            {% else %}🛠️
+            {% endif %}
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ category.name }} Services</h1>
+        {% if category.description %}
+        <p class="text-gray-600">{{ category.description }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Search within Category -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">Search within {{ category.name }}</h2>
+    <form method="GET" class="flex gap-4">
+        <input type="text" name="search" value="{{ search_query }}" 
+               placeholder="Search {{ category.name|lower }} services..." 
+               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <button type="submit" class="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition duration-200">
+            Search
+        </button>
+    </form>
+    
+    {% if search_query %}
+    <div class="mt-4">
+        <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm">
+            Search: "{{ search_query }}"
+        </span>
+        <a href="{% url 'category_services' category.id %}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm hover:bg-gray-200 ml-2">
+            Clear Search
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Services Grid -->
+{% if page_obj %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {% for service in page_obj %}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200">
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-3">
+                <h3 class="font-semibold text-lg text-gray-800">{{ service.service_name }}</h3>
+                <span class="bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">{{ service.category.name }}</span>
+            </div>
+            
+            <p class="text-gray-600 mb-2">by <span class="font-medium">{{ service.provider_name }}</span></p>
+            <p class="text-gray-700 text-sm mb-3">{{ service.description|truncatewords:20 }}</p>
+            
+            <div class="space-y-2 mb-4">
+                <div class="flex items-center text-sm text-gray-600">
+                    <span class="mr-1">📍</span>
+                    {{ service.location_area }}
+                </div>
+                {% if service.price_range %}
+                <div class="flex items-center text-sm text-green-600">
+                    <span class="mr-1">💰</span>
+                    {{ service.price_range }}
+                </div>
+                {% endif %}
+                {% if service.average_rating > 0 %}
+                <div class="flex items-center text-sm">
+                    <span class="text-yellow-500 mr-1">⭐</span>
+                    <span class="text-gray-600">{{ service.average_rating }}/5 ({{ service.review_count }} reviews)</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="px-6 pb-6">
+            <a href="{% url 'service_detail' service.pk %}" 
+               class="block w-full bg-primary-600 text-white text-center py-2 rounded-lg hover:bg-primary-700 transition duration-200">
+                View Details
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="flex justify-center">
+    <nav class="flex items-center space-x-2">
+        {% if page_obj.has_previous %}
+        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
+           class="px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+            First
+        </a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+           class="px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+            Previous
+        </a>
+        {% endif %}
+        
+        <span class="px-3 py-2 rounded-md bg-primary-600 text-white">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+           class="px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+            Next
+        </a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+           class="px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">
+            Last
+        </a>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
+
+{% else %}
+<div class="text-center py-12">
+    <div class="text-6xl mb-4">
+        {% if category.name == 'Tutoring' %}📚
+        {% elif category.name == 'Home Repair' %}🔧
+        {% elif category.name == 'Pet Care' %}🐕
+        {% elif category.name == 'Cleaning' %}🧹
+        {% elif category.name == 'Delivery' %}🚚
+        {% elif category.name == 'Photography' %}📸
+        {% elif category.name == 'Event Planning' %}🎉
+        {% elif category.name == 'Beauty & Wellness' %}💄
+        {% else %}🛠️
+        {% endif %}
+    </div>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">No {{ category.name|lower }} services found</h3>
+    <p class="text-gray-600 mb-6">Be the first to offer {{ category.name|lower }} services in your area!</p>
+    <a href="{% url 'create_service' %}" class="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition duration-200">
+        List Your Service
+    </a>
+</div>
+{% endif %}
+
+<!-- Call to Action -->
+<div class="bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg shadow-lg p-8 mt-8 text-center">
+    <h2 class="text-2xl font-bold mb-4">Offer {{ category.name }} Services?</h2>
+    <p class="text-lg mb-6">Join our community and help others find the {{ category.name|lower }} services they need</p>
+    <a href="{% url 'create_service' %}" class="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-200">
+        List Your Service
+    </a>
+</div>
+{% endblock %}

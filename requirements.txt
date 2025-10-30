@@ -1,0 +1,4 @@
+# LocalLink - Community Service Directory Requirements
+# Pip install these in your virtualenv
+Django>=5.2.0
+# No Python requirements for maps: Leaflet (JS/CSS) is loaded from CDN in templates
