@@ -111,32 +111,33 @@ LocalLink/
 
 
 ![Home Page](screenshots/1_homepage.png)
-![Home Page](screenshots\1_homepage(2).png)
-![Home Page](screenshots\1_homepage(3).png)
-![Home Page](screenshots\1_homepage(4).png)
+![Home Page](screenshots/1_homepage(2).png)
+![Home Page](screenshots/1_homepage(3).png)
+![Home Page](screenshots/1_homepage(4).png)
 
 
 
 - Service browse/search page (results, filtering, fallback)_ Service details page (with map, reviews, provider info)_
 
-```
-![Browse Services](screenshots\2_browse.png)
-![Browse Services](screenshots\2_browse(2).png)
-![Browse Services](screenshots\2_browse(3).png)
-![Browse Services](screenshots\5_reviews.png)
 
-```
+![Browse Services](screenshots/2_browse.png)
+![Browse Services](screenshots/2_browse(2).png)
+![Browse Services](screenshots/2_browse(3).png)
+![Browse Services](screenshots/5_reviews.png)
+
+
 - Add/Edit form with map location picker_
-```
-![Map Pick](screenshots\4_map_pick.png)
+  
+![Map Pick](screenshots/4_map_pick.png)
 
-```
+
 
 - Service Listings with details
-```
-![Service Listings](screenshots\listingservice.png)
-![Service Listings](screenshots\listingservicedetails.png)
-```
+
+
+![Service Listings](screenshots/listingservice.png)
+![Service Listings](screenshots/listingservicedetails.png)
+
 
 
 ---
@@ -240,6 +241,7 @@ LocalLink taught us how to connect backend logic with an interactive, map-based 
 ---
 
 **[Reserve these sections for annotated screenshots - fill in after you run the application and grab relevant UI shots.]**
+
 
 
 
