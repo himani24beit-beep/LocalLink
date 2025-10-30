@@ -1,120 +1,45 @@
-# LocalLink - Community Service Directory 🛠️
+# LocalLink 🛠️ — Community Service Directory
 
-A simple, hyperlocal directory for finding local services, like tutors, electricians, or pet sitters in your neighborhood or college campus.
+*A hyperlocal, map-enabled classified app for communities and campuses.*
+
+---
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [System Architecture & Database Schema](#system-architecture--database-schema)
+- [Design Decisions](#design-decisions)
+- [Screenshots & Flow](#screenshots--flow)
+- [Team Contributions](#team-contributions)
+- [Key Concepts Used](#key-concepts-used)
+- [Setup & Installation](#setup--installation)
+- [Challenges Faced](#challenges-faced)
+- [Future Improvements](#future-improvements)
+- [Requirements.txt](#requirementstxt)
+- [License](#license)
+
+---
+
+## Introduction
+
+**LocalLink** is a Django-based platform for connecting local service providers and seekers in any Indian neighborhood, college, or city. Users can list, search, sort, and review services like tutors, electricians, or pet sitters on an interactive map.
+
+---
 
 ## Features
 
-- **Service Listings**: Create, read, update, and delete service listings
-- **Categories**: Organize services by type (Tutoring, Home Repair, Pet Care, etc.)
-- **Search & Filter**: Find services by name, location, or category
-- **Reviews**: Rate and review services you've used
-- **Responsive Design**: Beautiful UI built with Tailwind CSS
-- **Admin Interface**: Easy management through Django admin
+- **Service Listings:** CRUD for location-based services (with map pin).
+- **Categories:** All services are organized.
+- **Reviews:** 5-star rating and comment system; shows review count and average everywhere.
+- **Browse & Search:** Filter services by text, category, location, or geography.
+- **Sort by Nearest:** Uses your location (or an address) to sort results by physical proximity.
+- **Map Integration:** Interactive OpenStreetMap (Leaflet.js) for both address entry and viewing.
+- **Indianized Demo Data:** Real Indian cities, names, phone numbers, and reviews in all sample content.
+- **Session-based Ownership:** Only the service creator can edit or delete their listing (secure, simple UX).
+- **Responsive Design:** Modern UI (TailwindCSS), optimized for desktop, tablet, mobile.
 
-## Technology Stack
+---
 
-- **Backend**: Django 5.2.7
-- **Frontend**: HTML templates with Tailwind CSS
-- **Database**: SQLite (default)
-- **Python**: 3.12+
-
-## Quick Start
-
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Run Migrations**:
-   ```bash
-   python manage.py migrate
-   ```
-
-3. **Populate Sample Data** (optional):
-   ```bash
-   python manage.py populate_data
-   ```
-
-4. **Create Admin User**:
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-5. **Start Development Server**:
-   ```bash
-   python manage.py runserver
-   ```
-
-6. **Access the Application**:
-   - Main site: http://127.0.0.1:8000/
-   - Admin interface: http://127.0.0.1:8000/admin/
-     - Username: `admin`
-     - Password: `admin123`
-
-## Database Models
-
-### Category
-- `name`: Category name (e.g., "Tutoring", "Home Repair")
-- `description`: Category description
-- `created_at`: Creation timestamp
-
-### ServiceListing
-- `service_name`: Name of the service
-- `provider_name`: Name of the service provider
-- `contact_info`: Primary contact method
-- `email`: Email address (optional)
-- `phone`: Phone number (optional)
-- `description`: Detailed service description
-- `location_area`: Service area/location
-- `category`: Foreign key to Category
-- `price_range`: Pricing information (optional)
-- `is_available`: Service availability status
-- `created_at`: Creation timestamp
-- `updated_at`: Last update timestamp
-
-### Review
-- `service_listing`: Foreign key to ServiceListing
-- `reviewer_name`: Name of the reviewer
-- `rating`: Rating from 1-5 stars
-- `comment`: Review text
-- `created_at`: Creation timestamp
-
-## Key Features
-
-### For Service Providers
-- List your services with detailed descriptions
-- Set pricing and availability
-- Manage your contact information
-- Update or delete your listings
-
-### For Service Seekers
-- Browse services by category
-- Search for specific services or locations
-- Read reviews from other users
-- Contact service providers directly
-- Leave reviews after using services
-
-### Search & Filtering
-- Search by service name, provider name, or description
-- Filter by category
-- Filter by location
-- Paginated results for better performance
-
-## Sample Data
-
-The application comes with sample data including:
-- 10 service categories
-- 10 sample service listings
-- 6 sample reviews
-
-Run `python manage.py populate_data` to populate the database with sample data.
-
-## Admin Interface
-
-Access the Django admin interface at `/admin/` to:
-- Manage categories, services, and reviews
-- View analytics and user activity
-- Moderate content if needed
 
 ## Project Structure
 
@@ -135,25 +60,177 @@ LocalLink/
 └── requirements.txt    # Python dependencies
 ```
 
-## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test your changes
-5. Submit a pull request
+### Database Models
 
-## License
+#### **Category**
+- `id` (auto)
+- `name` (str, unique)
+- `description` (str)
+- `created_at` (datetime)
 
-This project is open source and available under the MIT License.
+#### **ServiceListing**
+- `id` (auto)
+- `service_name` (str)
+- `provider_name` (str)
+- `contact_info` (str)
+- `email` (str)
+- `phone` (str)
+- `description` (str)
+- `location_area` (str)
+- `latitude` (`float`)  ← used for map/sorting
+- `longitude` (`float`) ← used for map/sorting
+- `category` (FK → Category)
+- `price_range` (str)
+- `is_available` (bool)
+- `created_at`, `updated_at` (datetime)
 
-## Future Enhancements
+#### **Review**
+- `id` (auto)
+- `service_listing` (FK → ServiceListing)
+- `reviewer_name` (str)
+- `rating` (int, 1–5, drop-down)
+- `comment` (text)
+- `created_at` (datetime)
 
-- User authentication and profiles
-- Direct messaging between users
-- Photo uploads for services
-- Map integration for location display
-- Email notifications
-- Mobile app development
-- Advanced search filters
-- Service booking system
+---
+
+## Design Decisions
+
+- **Mapping:** Used Leaflet.js and OpenStreetMap for free, reliable map UI—no API keys/billing required.
+- **Ownership:** Listings are editable only in the creator’s browser/session (simple for MVP, avoids registration hassle).
+- **Search UX:** Auto-fills form fields with GET parameters; keeps search bar and filters consistent for great UX.
+- **Data Indianization:** Sample data references Indian names, cities, and phone numbers for local relevance.
+- **Fallback content:** “Browse Services” page always displays featured listings or a strong CTA even when filters are too strict or DB is empty.
+- **Sorting Nearest:** Haversine formula used (in Python) to compute proper geo distance between user and all listings.
+
+---
+
+## Screenshots & Flow
+
+- Homepage with categories & featured_
+
+```
+![Home Page](screenshots/1_homepage.png)
+
+```
+
+- Service browse/search page (results, filtering, fallback)_
+
+
+- Service details page (with map, reviews, provider info)_
+- Add/Edit form with map location picker_
+- Admin panel_
+
+Example placeholders:
+
+```
+![Home Page](screenshots/1_homepage.png)
+![Browse Services](screenshots/2_browse.png)
+![Service Detail](screenshots/3_detail.png)
+![Map Pick](screenshots/4_map_pick.png)
+![Reviews](screenshots/5_reviews.png)
+```
+
+---
+
+## Team Contributions
+
+| Team Member              | Contribution Areas                                              |
+|--------------------------|-----------------------------------------------------------------|
+| [Sanika Jage 333]        | Django Models & Admin, Database schema, CRUD forms              |
+| [Vanshita Sonkar 338]    | Map Integration, Service list/search UI, Geo-sorting/logics     |
+| [Pranjal Jadhav 345]     | Reviews & Ratings System, Demo Data Population, Indianization   |
+| [Himani Shrivastava 324] | UX & Styling (Tailwind), Template fallback logic, bug fixing    |
+|--------------------------|-----------------------------------------------------------------|
+
+---
+
+## Key Concepts Used
+
+- **Django ORM:** All DB models and queries use class-based models and QuerySet filtering.
+- **Views, Routing & Templates:** Each CRUD, search, map, and review operation flows through Django’s powerful view/template pipeline.
+- **Forms & Widgets:** Django forms auto-generate UI, and custom widgets (e.g., hidden fields for lat/lng) enable map integration.
+- **Leaflet JS:** Pure-JS, open-source mapping used for geolocation, with event-listeners to update form fields on user input.
+- **List comprehensions & model methods:** To annotate or filter listings in complex ways (e.g., review averages).
+- **Session management:** For simple, secure ownership of listings.
+- **Separation of concerns:** Models handle business rules, views control logic, templates present UI.
+
+#### Example Course Concepts Directly Applied:
+- Used list comprehensions to process collections, e.g., `[review.rating for review in reviews]`
+- Used Django’s pagination and QuerySet chaining to chain filters and sorts.
+- Haversine distance computation (applied in Python) to optimize nearby service search.
+- Iterative/conditional rendering in templates (e.g., showing fallback listings).
+
+---
+
+## Setup & Installation
+
+### 1. Clone & Install
+```bash
+git clone <repo-url>
+cd LocalLink
+pip install -r requirements.txt
+```
+
+### 2. Database Setup
+```bash
+python manage.py migrate
+```
+
+### 3. (Optional) Demo Data
+```bash
+python manage.py populate_data
+```
+
+### 4. Run Server
+```bash
+python manage.py runserver
+```
+
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/)  
+Admin: `/admin/` (make superuser for full admin access)
+
+---
+
+## Challenges Faced
+
+- **Map JS/HTML integration:** Ensuring dynamic map display works on all browsers and forms.
+- **Persistent Search/Filter Bar:** Keeping user input fields “sticky,” so experience is never confusing (with many filter options applied).
+- **Fallback UX for Empty Results/DB:** Ensured that even with no matches/database entries, page remains welcoming.
+- **Indianization of Data:** Had to build custom sample data logic for names, cities, and phone numbers.
+- **Session Ownership:** Balancing privacy with usability in a system without registrations.
+
+---
+
+## Future Improvements
+
+- Add mobile location auto-detection on every “List a Service”.
+- OAuth/phone-based signup (beyond session-based ownership).
+- Profile pages for providers/seekers.
+- Photo gallery for each listing.
+- Direct messages or WhatsApp links.
+- “Top rated” or promoted listings with premium features.
+- Email/notification system for new reviews or booking requests.
+- More robust map search (multi-city, polygon area support).
+
+---
+
+## requirements.txt
+
+```
+Django>=5.2.0
+```
+_Also required for maps (Leaflet.js) but loaded via CDN in templates._
+
+---
+## Conclusion
+
+LocalLink taught us how to connect backend logic with an interactive, map-based frontend while focusing on clean architecture, usability, and local context relevance. Through this project, we deepened our understanding of Django models, forms, and templates, and learned to integrate real-world geolocation features into web applications.
+
+
+
+---
+
+**[Reserve these sections for annotated screenshots - fill in after you run the application and grab relevant UI shots.]**
+
