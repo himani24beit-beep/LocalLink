@@ -15,7 +15,7 @@
 - [Challenges Faced](#challenges-faced)
 - [Future Improvements](#future-improvements)
 - [Requirements.txt](#requirementstxt)
-- [License](#license)
+
 
 ---
 
@@ -247,7 +247,7 @@ LocalLink taught us how to connect backend logic with an interactive, map-based 
 
 ---
 
-**[Reserve these sections for annotated screenshots - fill in after you run the application and grab relevant UI shots.]**
+
 
 
 
