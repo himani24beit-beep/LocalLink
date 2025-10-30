@@ -109,13 +109,13 @@ LocalLink/
 
 - Homepage with categories & featured_
 
-```
+
 ![Home Page](screenshots\1_homepage.png)
 ![Home Page](screenshots\1_homepage(2).png)
 ![Home Page](screenshots\1_homepage(3).png)
 ![Home Page](screenshots\1_homepage(4).png)
 
-```
+
 
 - Service browse/search page (results, filtering, fallback)_ Service details page (with map, reviews, provider info)_
 
@@ -240,4 +240,5 @@ LocalLink taught us how to connect backend logic with an interactive, map-based 
 ---
 
 **[Reserve these sections for annotated screenshots - fill in after you run the application and grab relevant UI shots.]**
+
 
